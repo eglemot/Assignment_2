@@ -19,7 +19,6 @@ class IvestiKomanda():
             slant = 'roman',
             )
 
-        self.ivesti_duomenis_komanda = Label(self.langas, text= "ĮVESKITE NAUJOS KOMANDOS DUOMENIS",border=10, font=self.looks)
         self.ivesti_komandos_pavadinima_l = Label(self.langas, text="Pavadinimas")
         self.ivesti_komandos_pavadinima_e = Entry(self.langas)
         self.ivesti_asmenu_skaiciu_l = Label(self.langas, text="Asmenų skaičius")
@@ -29,7 +28,6 @@ class IvestiKomanda():
         self.patvirtinti_ivesti = Button(self.langas, text="Įvesti duomenis", command=self.ivesti_komanda)
         self.status_komanda = Label(self.langas, text="Laukiama, kol suvesite duomenis", border=10)
 
-        self.ivesti_duomenis_komanda.grid(row=0, column=0)
         self.ivesti_komandos_pavadinima_l.grid(row=1, column=0)
         self.ivesti_komandos_pavadinima_e.grid(row=2, column=0)
         self.ivesti_asmenu_skaiciu_l.grid(row=3, column=0)

@@ -4,7 +4,7 @@ from mygtukai.main_window import PagrindinisLangas
 def paleisti():
     root = Tk()
     root.title("PROJEKTŲ VALDYMAS")
-    root.geometry("200x500")
+    root.geometry("300x300")
     app = PagrindinisLangas(root)
     root.mainloop()
 

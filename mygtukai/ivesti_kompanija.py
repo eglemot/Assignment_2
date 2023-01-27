@@ -19,7 +19,6 @@ class IvestiImone():
             slant = 'roman',
             )
         
-        self.ivesti_duomenis_imone = Label(self.langas, text= "ĮVESKITE ĮMONĖS DUOMENIS",border=10, font=self.looks)
         self.ivesti_imones_pavadinima_l = Label(self.langas, text="Pavadinimas")
         self.ivesti_imones_pavadinima_e = Entry(self.langas)
         self.ivesti_imones_pasta_l = Label(self.langas, text="El.Paštas")
@@ -27,7 +26,6 @@ class IvestiImone():
         self.patvirtinti_ivesti = Button(self.langas, text="Įvesti duomenis", command=self.ivesti_imone)
         self.status_imone = Label(self.langas, text="Laukiama, kol suvesite duomenis", border=10)
 
-        self.ivesti_duomenis_imone.grid(row=0, column=0)
         self.ivesti_imones_pavadinima_l.grid(row=1, column=0)
         self.ivesti_imones_pavadinima_e.grid(row=2, column=0)
         self.ivesti_imones_pasta_l.grid(row=3, column=0)
