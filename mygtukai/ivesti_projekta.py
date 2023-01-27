@@ -88,5 +88,6 @@ class IvestiProjekta():
         imones = session.query(Imone).all()
         for imone in imones:
             print(imone.id, imone.pavadinimas)
+            self.parodyti.config(state=NORMAL)
             self.parodyti.insert('end',f"Įmonės ID: {imone.id}, Įmonės pavadinimas: {imone.pavadinimas}\n")
             self.parodyti.config(state=DISABLED)

@@ -28,7 +28,7 @@ class Projektas(Base):
     projekto_pradzia = Column(DateTime, default = datetime.utcnow)
     trukme_dienomis = Column(Integer)
     statusas = Column(String)
-    komanda_id = Column(Integer, ForeignKey('komanda.id'))
+    komanda_id = Column(String, ForeignKey('komanda.komandos_pavadinimas'))
     komanda = relationship(Komanda, back_populates="projektai")
     imone_id = Column(Integer, ForeignKey('imone.id'))
     imone = relationship("Imone", back_populates="projektai")
