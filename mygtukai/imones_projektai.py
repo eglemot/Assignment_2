@@ -25,7 +25,6 @@ class ProjektaiPagalImone():
         self.combo_box = ttk.Combobox(self.langas, values=self.my_list, textvariable=self.var)
         self.combo_box.current(0)
         
-
         self.ivesti_imones_id_l.pack()
         self.combo_box.pack()
         self.patvirtinti_imones_id.pack()
@@ -38,11 +37,11 @@ class ProjektaiPagalImone():
     def parodyti_projektus(self):
         self.parodyti.config(state=NORMAL)
         self.parodyti.delete("1.0","end")
-        kazkas = self.var.get()
-        print(kazkas)
-        for row in session.query(Imone).filter_by(pavadinimas=kazkas):
-            kazkas = row.id
-        projektai = session.query(Projektas).filter_by(komanda_id=kazkas)
+        i_pavadinimas = self.var.get()
+        print(i_pavadinimas)
+        for row in session.query(Imone).filter_by(pavadinimas=i_pavadinimas):
+            i_pavadinimas = row.id
+        projektai = session.query(Projektas).filter_by(imone_id=i_pavadinimas)
         for projektas in projektai:
             print(projektas.id, projektas.pavadinimas, projektas.projekto_pradzia, projektas.trukme_dienomis, projektas.statusas)
             self.parodyti.insert('end',f"Projekto ID: {projektas.id},\n Projekto pavadinimas: {projektas.pavadinimas},\n Projekto pradžia: {projektas.projekto_pradzia},\n Projekto trukmė dienomis: {projektas.trukme_dienomis},\n Projekto statusas: {projektas.statusas}\n")
