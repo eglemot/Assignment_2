@@ -1,9 +1,13 @@
 from tkinter import *
 from tkinter.font import Font
 from sqlalchemy.orm import sessionmaker
+from tkinter import ttk
+from tkinter.font import Font
 from .pagrindinis import Projektas, Komanda, Imone, engine
 
 session = sessionmaker(bind=engine)()
+query1="SELECT distinct(komandos_pavadinimas) as pavadinimas FROM komanda GROUP by komandos_pavadinimas"
+query2="SELECT distinct(pavadinimas) as pavadinimas FROM imone GROUP by pavadinimas"
 
 class IvestiProjekta():
 
@@ -12,28 +16,38 @@ class IvestiProjekta():
         self.main.title("ĮVESTI PROJEKTĄ")
         self.langas = Frame(self.main)
         self.tekstas = Frame(self.main)
-        self.langas.geometry = ("400x400")
+        self.langas.geometry = ("500x500")
         self.var = IntVar()
+        self.var1 = StringVar()
+        self.var2 = StringVar()
+        self.my_data1=engine.execute(query1)
+        self.my_list1 = [r for r, in self.my_data1]
+        self.my_data2=engine.execute(query2)
+        self.my_list2 = [r for r, in self.my_data2]
+        self.looks1 = Font(
+            family = 'Helvetica',
+            size = 14,
+            weight = 'normal',
+            slant = "italic",
+            underline = 1,
+            )
 
         self.ivesti_projekto_pavadinima_l = Label(self.langas, text="Projekto pavadinimas")
-        self.ivesti_projekto_pavadinima_e = Entry(self.langas)
+        self.ivesti_projekto_pavadinima_e = Entry(self.langas, bg="#F0E9D2", fg="#181D31")
         self.ivesti_projekto_trukme_l = Label(self.langas, text="Projekto trukmė dienomis")
-        self.ivesti_projekto_trukme_e = Entry(self.langas)
-        self.ivesti_projekto_status_l = Label(self.langas, text="Projekto statusas")
+        self.ivesti_projekto_trukme_e = Entry(self.langas, bg="#F0E9D2", fg="#181D31")
+        self.ivesti_projekto_status_l = Label(self.langas, text="Projekto statusas", border=5)
         self.vykdomas = Radiobutton(self.langas, text="Vykdomas", variable=self.var, value=0)
         self.sustabdytas= Radiobutton(self.langas, text="Sustabdytas", variable=self.var, value=1)
         self.baigtas = Radiobutton(self.langas, text="Baigtas", variable=self.var, value=2)
-        self.perziureti_komandas_b = Button(self.langas, text="Peržiūrėti komandas", command=self.perziureti_komanda)
-        self.perziureti_imones_b = Button(self.langas, text="Peržiūrėti įmones", command=self.perziureti_imone)
-        self.ivesti_komandos_id_l = Label(self.langas, text="Komandos ID")
-        self.ivesti_komandos_id_e = Entry(self.langas)
-        self.ivesti_imones_id_l = Label(self.langas, text="Įmonės ID")
-        self.ivesti_imones_id_e = Entry(self.langas)
-        self.patvirtinti_ivesta_projekta = Button(self.langas, text="Ivesti duomenis", command=self.ivesti_projekta)
-        self.status_projektas = Label(self.langas, text="Laukiama, kol suvesite duomenis", border=10)
-        self.parodyti = Text(self.tekstas, width=150, height=25)
-        self.parodyti.config(state=DISABLED)
-        self.scrol = Scrollbar(self.tekstas)
+        self.patvirtinti_ivesta_projekta = Button(self.langas, text="PATVIRTINTI", command=self.ivesti_projekta, border=5, fg="#4E6C50")
+        self.status_projektas = Label(self.langas, text="Laukiama, kol suvesite duomenis", border=10, font=self.looks1, fg="#F8485E")
+        self.pasirinkti_komanda_l = Label(self.langas, text="Pasirinkite komandą", border=5)
+        self.combo_box1 = ttk.Combobox(self.langas, values=self.my_list1, textvariable=self.var1)
+        self.combo_box1.current(0)
+        self.pasirinkti_imone_l = Label(self.langas, text="Pasirinkite įmonę", border=5)
+        self.combo_box2 = ttk.Combobox(self.langas, values=self.my_list2, textvariable=self.var2)
+        self.combo_box2.current(0)
 
         self.ivesti_projekto_pavadinima_l.pack()
         self.ivesti_projekto_pavadinima_e.pack()
@@ -43,51 +57,33 @@ class IvestiProjekta():
         self.baigtas.pack()
         self.ivesti_projekto_trukme_l.pack()
         self.ivesti_projekto_trukme_e.pack()
-        self.ivesti_komandos_id_l.pack()
-        self.perziureti_komandas_b.pack()
-        self.ivesti_komandos_id_e.pack()
-        self.ivesti_imones_id_l.pack()
-        self.perziureti_imones_b.pack()
-        self.ivesti_imones_id_e.pack()
+        self.pasirinkti_komanda_l.pack()
+        self.combo_box1.pack()
+        self.pasirinkti_imone_l.pack()
+        self.combo_box2.pack()
         self.patvirtinti_ivesta_projekta.pack()
         self.status_projektas.pack()
-        self.parodyti.pack(side=LEFT)
-        self.scrol.pack(side=RIGHT, fill=Y)
         self.langas.pack(side=TOP)
         self.tekstas.pack(side=BOTTOM)
 
         self.langas.mainloop()
    
     def ivesti_projekta(self):
-        komandos_id = self.ivesti_komandos_id_e.get()
-        imones_id = self.ivesti_imones_id_e.get()
+        komanda = self.var1.get()
+        for komanda in session.query(Komanda).filter_by(komandos_pavadinimas=komanda):
+            komanda_gal = komanda.id
+        imone = self.var2.get()
+        for imone in session.query(Imone).filter_by(pavadinimas=imone):
+            imones_id = imone.id
         if self.var.get() == 0:
             statuselis = "Vykdomas"
         if self.var.get() == 1:
             statuselis = "Sustabdytas"
         if self.var.get() == 2:
             statuselis = "Baigtas"
-        projektas_i = Projektas(pavadinimas=self.ivesti_projekto_pavadinima_e.get(), trukme_dienomis=self.ivesti_projekto_trukme_e.get(), statusas=statuselis, komanda_id=komandos_id, imone_id=imones_id)
+        projektas_i = Projektas(pavadinimas=self.ivesti_projekto_pavadinima_e.get(), trukme_dienomis=self.ivesti_projekto_trukme_e.get(), statusas=statuselis, komanda_id=komanda_gal, imone_id=imones_id)
         session.add(projektas_i)
         session.commit()
+        self.ivesti_projekto_pavadinima_e.delete(0, END)
+        self.ivesti_projekto_trukme_e.delete(0, END)
         self.status_projektas['text'] = "Sėkmingai sukurtas projektas"
-
-    def perziureti_komanda(self):
-        self.parodyti.config(state=NORMAL)
-        self.parodyti.delete("1.0","end")
-        komandos = session.query(Komanda).all()
-        for komanda in komandos:
-            print(komanda.id, komanda.komandos_pavadinimas, komanda.asmenu_skaicius, komanda.el_pastas)
-            self.parodyti.config(state=NORMAL)
-            self.parodyti.insert('end',f"Komandos ID: {komanda.id}, Komandos pavadinimas: {komanda.komandos_pavadinimas}\n")
-            self.parodyti.config(state=DISABLED)
-
-    def perziureti_imone(self):
-        self.parodyti.config(state=NORMAL)
-        self.parodyti.delete("1.0","end")
-        imones = session.query(Imone).all()
-        for imone in imones:
-            print(imone.id, imone.pavadinimas)
-            self.parodyti.config(state=NORMAL)
-            self.parodyti.insert('end',f"Įmonės ID: {imone.id}, Įmonės pavadinimas: {imone.pavadinimas}\n")
-            self.parodyti.config(state=DISABLED)
